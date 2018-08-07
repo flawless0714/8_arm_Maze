@@ -1,6 +1,7 @@
 ﻿/*
  1. after received data, ack didnt return properly.
- 2. (maybe solved, this may caused by esp8266 didnt sent proper data since we use pared data to start the   timer)timer doesnt start    even the training is started (sametime error with 1. 2.)
+ 2. esp8266 still send its at+cipsend here, this occur same time with 1. .
+ 3. (maybe solved, this may caused by esp8266 didnt sent proper data since we use pared data to start the   timer)timer doesnt start even the training is started (sametime error with 1. 2.)
 
  
  
@@ -16,7 +17,6 @@ using System.Linq;
 using System.Drawing;
 using System.IO;
 using System.Threading;
-
 
 namespace Maze_8_arm
 {
@@ -234,6 +234,7 @@ namespace Maze_8_arm
                         case (byte)mazeStatus.TRAINING_END:
                             mazeState.Text = "Training end";
                             timerTimeElapsed.Enabled = false;
+                            startButton.BackColor = Color.LawnGreen;
                             arm_Info.netState = connectionStatus.CONNECTED_TRAINING_DONE;
                             break;
                     }
@@ -373,6 +374,7 @@ namespace Maze_8_arm
             
             resultFilePath.ForeColor = Color.Black;
             resultFilePath.Text = resultFileDialog.FileName;
+            startButton.BackColor = Color.YellowGreen;
             networkTimer.Enabled = true;
             return;
         }
