@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D8165407-7D0A-4218-B343-72AA7A00CEFA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Maze_8_arm</RootNamespace>
-    <AssemblyName>Maze_8_arm</AssemblyName>
+    <RootNamespace>Maze_3_arm</RootNamespace>
+    <AssemblyName>Maze_3_arm</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -64,6 +64,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

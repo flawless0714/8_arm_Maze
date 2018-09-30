@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Maze_8_arm
+namespace Maze_3_arm
 {
     static class Program
     {
