@@ -375,6 +375,7 @@ namespace Maze_3_arm
 
         private void startButton_Click(object sender, EventArgs e)
         {              
+            
             try
             {
                 serialPortSelect.ForeColor = SystemColors.WindowText;
@@ -390,6 +391,7 @@ namespace Maze_3_arm
                 serialPortSelect.Text = "Port error";
                 return;
             }
+            
             try
             {
                 serialPortSelect.ForeColor = SystemColors.WindowText;
@@ -404,6 +406,7 @@ namespace Maze_3_arm
                 serialPortSelect.Text = "Port error";
                 return;
             }
+            
             ushort bufferIndex = 0;
             while (true)    /* this part is extremly hard-coded */
             {
