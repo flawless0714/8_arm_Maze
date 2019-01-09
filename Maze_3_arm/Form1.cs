@@ -24,6 +24,11 @@ using System.Threading;
 using System.IO.Ports;
 using System.Collections.Generic;
 
+using ClosedXML.Excel;
+using System.ComponentModel;
+using System.Reflection;
+using GenXLSX;
+
 namespace Maze_3_arm
 {
     
@@ -46,6 +51,11 @@ namespace Maze_3_arm
         bool isTrainingFisrtTime = true;
         ushort ratRouteIndex = 18;
         uint timerCount = 0;
+
+        /* xlsx related */
+        String saveFileForXlsx;
+        XSLXHelper xlsxIns;
+        /*--------------*/
 
         SerialPort serialPort = new SerialPort();
         //List<Byte> receiveDataList = new List<Byte>();
@@ -100,9 +110,20 @@ namespace Maze_3_arm
         {
 
         }
+        public class User
+        {
+            [Description("longTermError")]
+            public string Total_long_term { get; set; }
+            [Description("shortTermError")]
+            public string Total_short_term { get; set; }
+            [Description("trainingTime")]
+            public string Total_training_time { get; set; }
+            [Description("armWithFood")]
+            public string Arm_with_food { get; set; }
+        }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
+        {            
             string[] ports = SerialPort.GetPortNames();
             serialPortSelect.Items.AddRange(ports);
             //recvBuffer1 = 3;
@@ -338,6 +359,91 @@ namespace Maze_3_arm
                     }
                     break;
                 case connectionStatus.TRAINING_END:
+                    /* xlsx log file------------- */
+                    ushort bufferIndex = 0; /* for food_arm record */
+                    while (true)    /* this part is extremly hard-coded */
+                    {
+                        if (checkBoxArmLoc0.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 0;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        if (checkBoxArmLoc1.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 1;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        if (checkBoxArmLoc2.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 2;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        if (checkBoxArmLoc3.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 3;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        if (checkBoxArmLoc4.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 4;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        if (checkBoxArmLoc5.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 5;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        if (checkBoxArmLoc6.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 6;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        if (checkBoxArmLoc7.Checked)
+                        {
+                            sendBuffer[bufferIndex] = 7;
+                            bufferIndex++;
+                            if (bufferIndex == 4)
+                                break;
+                        }
+                        errorBox.ForeColor = Color.Red;
+                        errorBox.Text = "Arm with food didn't check properly";
+                        return;
+                    }
+
+                    var log = new List<User>();
+
+                    if (timeElapsed.Text == "")
+                        timeElapsed.Text = "unknown";
+                    log.Add(new User()
+                    {
+                        Total_long_term = totalLongTerm.Text,
+                        Total_short_term = totalShortTerm.Text,
+                        Total_training_time = timeElapsed.Text,
+                        Arm_with_food = ((sendBuffer[0] + 1).ToString() + "," + (sendBuffer[1] + 1).ToString() + "," + (sendBuffer[2] + 1).ToString() + "," + (sendBuffer[3] + 1).ToString())
+                    });
+
+                    string filepath = $@"{resultFilePath.Text}.xlsx"; /* TODO: sub string ".txt" */
+
+                     xlsxIns.ratID = ratID.Text;
+                     var xlsx = xlsxIns.Export(log);
+
+                    xlsx.SaveAs(filepath);
+
+                    /* -------------------------- */
                     timerCount = 0; /* time counting */
                     resultStreamWriter.Write(Environment.NewLine + "Total long term: " + totalLongTerm.Text);
                     resultStreamWriter.Write(Environment.NewLine + "Total short term: " + totalShortTerm.Text);
@@ -480,6 +586,13 @@ namespace Maze_3_arm
                 resultFilePath.ForeColor = Color.Red;
                 return;
             }
+            /* xlsx log file------------- */
+            if (saveFileForXlsx != resultFilePath.Text) /* save to new sheet (deprecated old XSLXHelper) */
+            {
+                xlsxIns = new XSLXHelper();
+                saveFileForXlsx = resultFilePath.Text;
+            }
+            /* -------------------------- */
             bufferIndex = 0;
             resultStreamWriter.Write("Arm with food: ");
             resultStreamWriter.Write((sendBuffer[bufferIndex++] + 1).ToString() + " ");
